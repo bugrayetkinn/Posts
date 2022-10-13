@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,7 +16,8 @@ import com.yetkin.myapplication.ui.adapter.PostsAdapter
 import com.yetkin.myapplication.ui.model.PostUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
-const val POST_MODEL_CHANGED = "post_model_changed"
+const val FRAGMENT_RESULT_CHANGE_POST_KEY = "post_model_changed"
+const val FRAGMENT_RESULT_BUNDLE_CHANGE_POST_KEY = "bundleChangedPost"
 
 @AndroidEntryPoint
 class PostsFragment : Fragment() {
@@ -34,19 +36,19 @@ class PostsFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        initAdapter()
+        fragmentResultListenerForDetail()
 
-        observeCurrentBackStackEntry()
+        initAdapter()
 
         observeViewModel()
     }
 
-    private fun observeCurrentBackStackEntry() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<PostUiModel?>(
-            POST_MODEL_CHANGED
-        )?.observe(viewLifecycleOwner) {
-            it ?: return@observe
-            updatePost(it)
+    private fun fragmentResultListenerForDetail() {
+        setFragmentResultListener(FRAGMENT_RESULT_CHANGE_POST_KEY) { _, bundle ->
+            val changedPost =
+                bundle.getParcelable<PostUiModel>(FRAGMENT_RESULT_BUNDLE_CHANGE_POST_KEY)
+                    ?: return@setFragmentResultListener
+            updatePost(changedPost)
         }
     }
 
@@ -97,7 +99,6 @@ class PostsFragment : Fragment() {
     private fun updatePost(postUiModel: PostUiModel) {
         viewModel.clickedPostPosition?.let {
             viewModel.postsUiState.value?.data?.set(it, postUiModel)
-            postsAdapter.submitList(viewModel.postsUiState.value?.data)
         }
     }
 }

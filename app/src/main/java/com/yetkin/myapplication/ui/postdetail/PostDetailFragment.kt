@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.yetkin.myapplication.databinding.FragmentPostDetailBinding
 import com.yetkin.myapplication.other.extension.showToast
-import com.yetkin.myapplication.ui.posts.POST_MODEL_CHANGED
+import com.yetkin.myapplication.ui.posts.FRAGMENT_RESULT_BUNDLE_CHANGE_POST_KEY
+import com.yetkin.myapplication.ui.posts.FRAGMENT_RESULT_CHANGE_POST_KEY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,7 +40,7 @@ class PostDetailFragment : Fragment() {
     private fun initView() {
         binding.apply {
             imageBack.setOnClickListener {
-                findNavController().popBackStack()
+                popBackStack()
             }
 
             btnUpdate.setOnClickListener {
@@ -53,7 +55,12 @@ class PostDetailFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.postUpdateState.observe(viewLifecycleOwner) { updateState ->
             updateState.infoText.showToast(requireContext())
-            updatePostToPopBackStack(if (updateState.isSuccess) updateState else null)
+            if (updateState.isSuccess) {
+                setFragmentResult(FRAGMENT_RESULT_CHANGE_POST_KEY, Bundle().apply {
+                    putParcelable(FRAGMENT_RESULT_BUNDLE_CHANGE_POST_KEY, updateState?.changedPost)
+                })
+            }
+            popBackStack()
         }
 
         viewModel.postData.observe(viewLifecycleOwner) {
@@ -61,13 +68,5 @@ class PostDetailFragment : Fragment() {
         }
     }
 
-    private fun updatePostToPopBackStack(updateState: UpdateState?) {
-        findNavController().apply {
-            previousBackStackEntry?.savedStateHandle?.set(
-                POST_MODEL_CHANGED,
-                updateState?.changedPost
-            )
-            popBackStack()
-        }
-    }
+    private fun popBackStack() = findNavController().popBackStack()
 }
