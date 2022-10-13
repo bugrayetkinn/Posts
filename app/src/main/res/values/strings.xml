@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Posts</string>
+
+    <!-- BUTTON -->
+    <string name="button_post_update">Update</string>
+    <string name="button_post_retry">Retry</string>
+</resources>

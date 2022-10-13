@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="postUiModel"
+            type="com.yetkin.myapplication.ui.model.PostUiModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imagePost"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadCircleImage="@{postUiModel.id}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPostTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{postUiModel.postTitle}"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imagePost"
+            app:layout_constraintTop_toTopOf="@id/imagePost"
+            tools:text="ea molestias quasi exercitationem repellat qui ipsa sit aut" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPostDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{postUiModel.postDesc}"
+            app:layout_constraintEnd_toEndOf="@id/tvPostTitle"
+            app:layout_constraintStart_toStartOf="@id/tvPostTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvPostTitle"
+            tools:text="et iusto sed quo iure nvoluptatem occaecati omnis eligendi aut ad voluptatem doloribus vel accusantium quis pariatur molestiae porro eius odio et labore et velit aut" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/white_200"
+            app:layout_constraintTop_toBottomOf="@id/tvPostDesc" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
